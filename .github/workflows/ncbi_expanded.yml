@@ -7,6 +7,7 @@ on:
       - 'config/expanded_accessions.txt'
       - 'scripts/pilot_annotated_proteins.py'
       - 'scripts/compare_exact_sequences.py'
+      - 'scripts/add_3610_chromosome.py'
 jobs:
   expanded:
     runs-on: ubuntu-latest
@@ -24,8 +25,16 @@ jobs:
           mkdir -p data results/expanded
           datasets download genome accession --inputfile config/expanded_accessions.txt --include genome,protein,cds,gff3,gbff --filename data/expanded.zip
           unzip -q data/expanded.zip -d data/expanded
+      - name: Install GenBank parser
+        run: python3 -m pip install biopython
+      - name: Download NCIB 3610 chromosome GenBank only
+        run: |
+          curl -fL --retry 5 --retry-delay 3 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=CP020102&rettype=gbwithparts&retmode=text' -o data/NCIB3610_CP020102.gb
+          test -s data/NCIB3610_CP020102.gb
       - name: Extract annotated short proteins
         run: python3 scripts/pilot_annotated_proteins.py data/expanded results/expanded
+      - name: Append NCIB 3610 chromosome proteins (exclude pBS32)
+        run: python3 scripts/add_3610_chromosome.py data/NCIB3610_CP020102.gb results/expanded
       - name: Exact-sequence comparison (not orthology)
         run: python3 scripts/compare_exact_sequences.py results/expanded/annotated_small_proteins.csv results/expanded/exact_sequence_patterns.csv
       - name: Upload results
