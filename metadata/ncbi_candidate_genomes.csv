@@ -1,0 +1,3 @@
+niche,strain,assembly_accession,biosample_accession,assembly_level,source_evidence_url,status,notes
+chicken_gut,BSP1,GCA_000321395.1,SAMN02603212,Complete genome,https://www.ncbi.nlm.nih.gov/bioproject/166925,candidate,"Broiler fecal isolate per BioProject; pending ANI and assembly QC"
+food,BEST195,GCA_000209795.2,SAMD00016353,Complete genome,https://www.ncbi.nlm.nih.gov/bioproject/38027,candidate,"Natto production strain; pending ANI and assembly QC"
