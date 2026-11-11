@@ -1,0 +1,11 @@
+name: bsub-small-proteins
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - biopython
+  - pandas
+  - ncbi-datasets-cli
+  - blast
+  - bedtools
