@@ -1,0 +1,46 @@
+name: Ecological expansion exact-sequence comparison
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ecological_expansion.yml'
+      - 'scripts/append_ecological_chromosomes.py'
+      - 'scripts/plot_ecological_overlap.py'
+jobs:
+  ecological-comparison:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          python3 -m pip install biopython matplotlib matplotlib-venn
+          curl -fsSL https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets -o datasets
+          chmod +x datasets
+          sudo mv datasets /usr/local/bin/
+      - name: Download original assembly dataset
+        run: |
+          mkdir -p data results/ecological
+          datasets download genome accession --inputfile config/expanded_accessions.txt --include genome,protein,cds,gff3,gbff --filename data/expanded.zip
+          unzip -q data/expanded.zip -d data/expanded
+      - name: Download NCIB 3610 chromosome only
+        run: |
+          curl -fL --retry 5 --retry-delay 3 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=CP020102&rettype=gbwithparts&retmode=text' -o data/NCIB3610_CP020102.gb
+          test -s data/NCIB3610_CP020102.gb
+      - name: Extract baseline proteins
+        run: |
+          python3 scripts/pilot_annotated_proteins.py data/expanded results/ecological
+          python3 scripts/add_3610_chromosome.py data/NCIB3610_CP020102.gb results/ecological
+      - name: Add soil and plant chromosomes (no plasmids)
+        run: python3 scripts/append_ecological_chromosomes.py results/ecological
+      - name: Compute all exact sequence intersections
+        run: python3 scripts/compare_exact_sequences.py results/ecological/annotated_small_proteins.csv results/ecological/exact_sequence_patterns.csv
+      - name: Plot proportional overlap
+        run: python3 scripts/plot_ecological_overlap.py results/ecological
+      - name: Upload complete analysis
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecological-expanded-exact-sequence-analysis
+          path: results/ecological/
+          if-no-files-found: warn
