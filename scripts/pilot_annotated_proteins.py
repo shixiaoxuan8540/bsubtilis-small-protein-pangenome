@@ -6,7 +6,7 @@ rows=[]; seqgroups=collections.defaultdict(set); qc=[]
 for d in sorted((root/'ncbi_dataset'/'data').glob('GC*')):
     acc=d.name
     f=d/'protein.faa'
-    g=next(d.glob('*_genomic.fna'),None)
+    g=next((x for x in d.glob('*genomic.fna') if not x.name.startswith(('cds_', 'rna_'))),None)
     if not f.exists():
         qc.append({'accession':acc,'status':'missing protein.faa','genome_bp':'','contigs':''});continue
     length=0; nseq=0
@@ -26,7 +26,7 @@ for d in sorted((root/'ncbi_dataset'/'data').glob('GC*')):
             process();name=line[1:].strip().split()[0];sequence=[]
         else:sequence.append(line.strip())
     process()
-    qc.append({'accession':acc,'status':'ok','genome_bp':length,'contigs':nseq})
+    qc.append({'accession':acc,'status':'ok' if g else 'genome FASTA missing','genome_bp':length if g else '', 'contigs':nseq if g else ''})
 with (out/'annotated_small_proteins.csv').open('w',newline='') as f:
     w=csv.DictWriter(f,fieldnames=['accession','protein_id','length_aa','sequence']);w.writeheader();w.writerows(rows)
 with (out/'assembly_qc.csv').open('w',newline='') as f:
