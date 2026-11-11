@@ -1,0 +1,11 @@
+niche,strain,accession_type,accession,assembly_quality,source_evidence_url,status,notes
+aquatic,MARUCo01,assembly,GCA_025837035.1,complete,https://pmc.ncbi.nlm.nih.gov/articles/PMC10508113/,candidate,"Marine sediment; confirm assembly version and ANI"
+aquatic,29R7-12,not_yet_checked,,complete_reported,https://pmc.ncbi.nlm.nih.gov/articles/PMC5323615/,candidate,"Deep seafloor sediment; assembly accession pending"
+soil,MH1,not_yet_checked,,complete_reported,https://pmc.ncbi.nlm.nih.gov/articles/PMC6013613/,candidate,"Bangladesh soil; assembly accession pending"
+soil,73,chromosome,CP045826,closed_circular,https://pmc.ncbi.nlm.nih.gov/articles/PMC6952667/,candidate,"Germany/Denmark soil study; confirm individual metadata and assembly"
+soil,75,chromosome,CP045825,closed_circular,https://pmc.ncbi.nlm.nih.gov/articles/PMC6952667/,candidate,"Germany/Denmark soil study; confirm individual metadata and assembly"
+soil,MB8_B1,chromosome,CP045823,closed_circular,https://pmc.ncbi.nlm.nih.gov/articles/PMC6952667/,candidate,"Germany/Denmark soil study; confirm individual metadata and assembly"
+human_gut,Eramic25,assembly,GCA_031932165.1,draft_100_contigs,https://pmc.ncbi.nlm.nih.gov/articles/PMC12509529/,candidate,"Human feces Vietnam; reported 97.2 percent completeness; draft only"
+fish_gut,TP111,not_yet_checked,,whole_genome_reported,https://pmc.ncbi.nlm.nih.gov/articles/PMC12060691/,candidate,"Healthy Nile tilapia gut; assembly accession pending"
+fish_associated_not_gut,CJ,assembly,GCA_059510825.1,complete,https://www.ncbi.nlm.nih.gov/bioproject/1481366,exclude_from_gut,"Grass carp larvae origin does not establish intestinal isolation"
+food,NARUSE,assembly,GCA_030297075.1,complete,https://www.ncbi.nlm.nih.gov/bioproject/971000,candidate,"Natto production strain; not necessarily direct food isolation"
