@@ -1,0 +1,43 @@
+name: Curated 589 ecological sequence comparison
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/curated_589.yml'
+      - 'scripts/compare_curated_589.py'
+      - 'metadata/curated_589_reference.csv'
+jobs:
+  curated-589:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          python3 -m pip install biopython matplotlib matplotlib-venn
+          curl -fsSL https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets -o datasets
+          chmod +x datasets
+          sudo mv datasets /usr/local/bin/
+      - name: Download baseline assemblies
+        run: |
+          mkdir -p data results/curated589
+          datasets download genome accession --inputfile config/expanded_accessions.txt --include genome,protein,cds,gff3,gbff --filename data/expanded.zip
+          unzip -q data/expanded.zip -d data/expanded
+      - name: Download NCIB 3610 chromosome
+        run: |
+          curl -fL --retry 5 --retry-delay 3 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=CP020102&rettype=gbwithparts&retmode=text' -o data/NCIB3610_CP020102.gb
+          test -s data/NCIB3610_CP020102.gb
+      - name: Extract annotated protein sequences and add ecological chromosomes
+        run: |
+          python3 scripts/pilot_annotated_proteins.py data/expanded results/curated589
+          python3 scripts/add_3610_chromosome.py data/NCIB3610_CP020102.gb results/curated589
+          python3 scripts/append_ecological_chromosomes.py results/curated589
+      - name: Compare against curated 589 reference and plot
+        run: python3 scripts/compare_curated_589.py results/curated589 metadata/curated_589_reference.csv
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: curated-589-ecological-sequence-comparison
+          path: results/curated589/
+          if-no-files-found: warn
