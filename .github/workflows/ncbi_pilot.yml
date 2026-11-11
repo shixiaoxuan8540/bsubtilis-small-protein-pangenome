@@ -1,0 +1,34 @@
+name: NCBI annotated-small-protein pilot
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ncbi_pilot.yml'
+      - 'scripts/pilot_annotated_proteins.py'
+      - 'config/pilot_accessions.txt'
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install NCBI Datasets CLI
+        run: |
+          curl -fsSL https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets -o datasets
+          chmod +x datasets
+          sudo mv datasets /usr/local/bin/
+          datasets version
+      - name: Download NCBI genomes and annotations
+        run: |
+          mkdir -p data results/pilot
+          datasets download genome accession --inputfile config/pilot_accessions.txt --include genome,protein,cds,gff3,gbff --filename data/pilot.zip
+          unzip -q data/pilot.zip -d data/pilot
+      - name: Extract annotated short proteins and summarize
+        run: python3 scripts/pilot_annotated_proteins.py data/pilot results/pilot
+      - name: Upload analysis results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsubtilis-annotated-small-protein-pilot
+          path: results/pilot/
+          if-no-files-found: warn
