@@ -1,0 +1,37 @@
+name: Expanded NCBI small-protein pilot
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ncbi_expanded.yml'
+      - 'config/expanded_accessions.txt'
+      - 'scripts/pilot_annotated_proteins.py'
+      - 'scripts/compare_exact_sequences.py'
+jobs:
+  expanded:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install NCBI Datasets CLI
+        run: |
+          curl -fsSL https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets -o datasets
+          chmod +x datasets
+          sudo mv datasets /usr/local/bin/
+          datasets version
+      - name: Download assemblies
+        run: |
+          mkdir -p data results/expanded
+          datasets download genome accession --inputfile config/expanded_accessions.txt --include genome,protein,cds,gff3,gbff --filename data/expanded.zip
+          unzip -q data/expanded.zip -d data/expanded
+      - name: Extract annotated short proteins
+        run: python3 scripts/pilot_annotated_proteins.py data/expanded results/expanded
+      - name: Exact-sequence comparison (not orthology)
+        run: python3 scripts/compare_exact_sequences.py results/expanded/annotated_small_proteins.csv results/expanded/exact_sequence_patterns.csv
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsubtilis-expanded-annotated-small-protein-pilot
+          path: results/expanded/
+          if-no-files-found: warn
