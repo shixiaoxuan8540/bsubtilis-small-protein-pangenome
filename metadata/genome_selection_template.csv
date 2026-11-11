@@ -1,0 +1,21 @@
+slot,niche,strain,assembly_accession,biosample_accession,original_isolation_source,host,isolation_country,assembly_level,genome_size_bp,taxonomic_verification,source_evidence_url,metadata_verified,review_notes
+168,reference,168,GCF_000009045.1,,,,,,,,no,168 accession known; still review metadata
+NCIB 3610,reference,NCIB 3610,,,,,,,,,no,Unverified selection slot
+aquatic_1,aquatic,,,,,,,,,,no,Unverified selection slot
+aquatic_2,aquatic,,,,,,,,,,no,Unverified selection slot
+aquatic_3,aquatic,,,,,,,,,,no,Unverified selection slot
+soil_1,soil,,,,,,,,,,no,Unverified selection slot
+soil_2,soil,,,,,,,,,,no,Unverified selection slot
+soil_3,soil,,,,,,,,,,no,Unverified selection slot
+human_gut_1,human_gut,,,,,,,,,,no,Unverified selection slot
+human_gut_2,human_gut,,,,,,,,,,no,Unverified selection slot
+human_gut_3,human_gut,,,,,,,,,,no,Unverified selection slot
+chicken_gut_1,chicken_gut,,,,,,,,,,no,Unverified selection slot
+chicken_gut_2,chicken_gut,,,,,,,,,,no,Unverified selection slot
+chicken_gut_3,chicken_gut,,,,,,,,,,no,Unverified selection slot
+fish_gut_1,fish_gut,,,,,,,,,,no,Unverified selection slot
+fish_gut_2,fish_gut,,,,,,,,,,no,Unverified selection slot
+fish_gut_3,fish_gut,,,,,,,,,,no,Unverified selection slot
+food_1,food,,,,,,,,,,no,Unverified selection slot
+food_2,food,,,,,,,,,,no,Unverified selection slot
+food_3,food,,,,,,,,,,no,Unverified selection slot
